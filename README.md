@@ -4,7 +4,14 @@
 
 ```bash
 go get github.com/syndtr/goleveldb/leveldb
+go get github.com/enapter/slrparser/slr-block-info
 go install github.com/enapter/slrparser/slr-block-info
+```
+
+## Usage
+
+```bash
+slr-block-info [BLOCK_HASH]
 ```
 
 ## Acknowledgements
