@@ -10,10 +10,12 @@ import (
 )
 
 func main() {
-	hashStr := os.Args[1]
-	if hashStr == "" {
-		panic("No ARG")
+	if len(os.Args) < 2 {
+		os.Stderr.WriteString("No block hash provided. Usage: slr-block-info [HASH]\n")
+		os.Exit(1)
 	}
+
+	hashStr := os.Args[1]
 	hash, err := hex.DecodeString(hashStr)
 	if err != nil {
 		panic(err)
