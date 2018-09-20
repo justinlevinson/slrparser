@@ -66,6 +66,12 @@ func (tx Transaction) Hash() Hash256 {
 	binary.LittleEndian.PutUint32(locktime, uint32(tx.LockTime.Unix()))
 	bin = append(bin, locktime...)
 
+	if tx.Version >= 2 {
+		commentLen := Varint(uint64(len(tx.Comment)))
+		bin = append(bin, commentLen...)
+		bin = append(bin, tx.Comment...)
+	}
+
 	tx.hash = DoubleSha256(bin)
 	return tx.hash
 }
