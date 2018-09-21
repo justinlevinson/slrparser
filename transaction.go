@@ -40,6 +40,11 @@ func (script Script) MarshalText() ([]byte, error) {
 }
 
 func (tx Transaction) Hash() Hash256 {
+	tx.hash = DoubleSha256(tx.Binary())
+	return tx.hash
+}
+
+func (tx Transaction) Binary() []byte {
 	if tx.hash != nil {
 		return tx.hash
 	}
@@ -49,6 +54,12 @@ func (tx Transaction) Hash() Hash256 {
 	version := make([]byte, 4)
 	binary.LittleEndian.PutUint32(version, uint32(tx.Version))
 	bin = append(bin, version...)
+
+	if tx.Version >= 4 {
+		time := make([]byte, 4)
+		binary.LittleEndian.PutUint32(time, uint32(tx.Time.Unix()))
+		bin = append(bin, time...)
+	}
 
 	vinLength := Varint(uint64(len(tx.Vin)))
 	bin = append(bin, vinLength...)
@@ -72,8 +83,7 @@ func (tx Transaction) Hash() Hash256 {
 		bin = append(bin, tx.Comment...)
 	}
 
-	tx.hash = DoubleSha256(bin)
-	return tx.hash
+	return bin
 }
 
 func (in TransactionInput) Binary() []byte {
